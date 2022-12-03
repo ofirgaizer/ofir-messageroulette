@@ -1,7 +1,7 @@
 import { DotenvConfigOutput } from "dotenv";
 import LoggerHandler from "./logger-config";
 import { Server, Socket } from 'socket.io';
-import Utils from "./utils";
+import Utils from "./utils-functions";
 import SocketInitializer from "./initialize-socket";
 
 export default class Events {

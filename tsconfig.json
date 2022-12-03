@@ -3,15 +3,16 @@
     "allowUmdGlobalAccess": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "noUnusedLocals": false,
+     "noUnusedLocals": false,
     "outDir": "./dist",
     "sourceMap": true,
     "types": [
       "node"
     ],
-    "target": "es2016",
-    "module": "CommonJS",
+    "target": "ES6",
+    "module": "commonjs",
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
