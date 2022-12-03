@@ -1,0 +1,34 @@
+{
+  "name": "messageroulette",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "npm run build && cross-env NODE_ENV='dev' node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@socket.io/redis-adapter": "^7.2.0",
+    "@socket.io/redis-emitter": "^5.0.0",
+    "@types/node": "^18.11.9",
+    "@types/redis": "^4.0.11",
+    "bcrypt": "^5.1.0",
+    "install": "^0.13.0",
+    "jsonwebtoken": "^8.5.1",
+    "npm": "^9.1.3",
+    "redis": "^4.5.1",
+    "redis-cli": "^2.1.2",
+    "socket.io": "^4.5.4",
+    "socketio-jwt": "^4.6.2",
+    "socketio-jwt-auth": "^0.2.1",
+    "uuid": "^9.0.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@types/socketio-jwt-auth": "^0.0.2",
+    "cross-env": "^7.0.3"
+  }
+}
