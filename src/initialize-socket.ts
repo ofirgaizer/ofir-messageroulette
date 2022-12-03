@@ -36,6 +36,7 @@ export default class SocketInitializer {
             await Promise.all([this.pubClient.connect(), this.subClient.connect()])
             this.io.adapter(createAdapter(this.pubClient, this.subClient));
             this.io.listen(3000);
+            this.io.use((socket, next) => (this.middleware.checkAuth(socket, next)));
             await this.getConnectedList();
             this.onConnectionEvent();
 
@@ -48,7 +49,6 @@ export default class SocketInitializer {
         try {
             this.io.on('connection', (socket) => {
                 this.connectedUsers.push(socket.id);
-                this.io.use((socket, next) => (this.middleware.checkAuth(socket, next)));
                 this.events.ListenFactory(socket, this.connectedUsers);
                 this.logger.logger.info(`socket connected`)
                 socket.on('disconnect', () => {
