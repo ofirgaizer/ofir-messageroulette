@@ -1,14 +1,14 @@
 import { DotenvConfigOutput } from "dotenv";
 import { Socket } from "socket.io";
 import { Server } from 'socket.io';
-import LoggerConfig from './logger-config'
+import LoggerHandler from './logger-config'
 
 export default class Middleware {
     io: Server
     config: DotenvConfigOutput
     secretKey: any
-    logger: LoggerConfig
-    constructor(io: Server, config: DotenvConfigOutput, logger: LoggerConfig) {
+    logger: LoggerHandler
+    constructor(io: Server, config: DotenvConfigOutput, logger: LoggerHandler) {
         this.config = config
         this.io = io;
         this.secretKey = process.env.SECRET_KEY

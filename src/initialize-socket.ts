@@ -1,22 +1,22 @@
 import { DotenvConfigOutput } from "dotenv";
-import LoggerConfig from "./logger-config";
+import LoggerHandler from "./logger-config";
 import { Server} from 'socket.io';
-import { createClient, RedisClientType } from 'redis';
+import { createClient, RedisClientType} from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 import Middleware from "./middleware";
-import Events from "./routes";
+import Events from "./events";
 
 export default class SocketInitializer {
     io: Server
     config: DotenvConfigOutput
-    logger: LoggerConfig
+    logger: LoggerHandler
     pubClient: RedisClientType
     subClient: RedisClientType
     socketOptions: any
     events: Events
     connectedUsers: string[]
     middleware: Middleware
-    constructor(io: Server, config: DotenvConfigOutput, logger: LoggerConfig) {
+    constructor(io: Server, config: DotenvConfigOutput, logger: LoggerHandler) {
         this.config = config
         this.logger = logger;
         this.io = io;
@@ -31,14 +31,14 @@ export default class SocketInitializer {
         this.connectedUsers = [];
     }
 
-    initializeAdapter(): void {
+    async initializeAdapter(): Promise<void> {
         try {
-            Promise.all([this.pubClient.connect(), this.subClient.connect()]).then(() => {
+                await Promise.all([this.pubClient.connect(), this.subClient.connect()])
                 this.io.adapter(createAdapter(this.pubClient, this.subClient));
                 this.io.listen(3000);
-                console.log("listen");
+                await this.getConnectedList();
                 this.onConnectionEvent();
-            })
+            
         }
         catch (err) {
             this.logger.logger.error(`try connect redis adapter ${err}`);
@@ -46,17 +46,15 @@ export default class SocketInitializer {
     }
     onConnectionEvent() {
         try {
-            this.io.on('connection', async (socket) => {
+            this.io.on('connection', (socket) => {
+                this.connectedUsers.push(socket.id);
                 this.io.use((socket, next) => (this.middleware.checkAuth(socket, next)));
-                await this.getConnectedList();
                 this.events.ListenFactory(socket, this.connectedUsers);
                 this.logger.logger.info(`socket connected`)
                 socket.on('disconnect', () => {
                     this.io.emit(`user ${socket.id} disconnected`);
-                    const presentUser = this.connectedUsers.find(id => id == socket.id);
-                    this.connectedUsers = this.connectedUsers.filter(user => user != presentUser);
+                    this.connectedUsers = this.connectedUsers.filter(user => user != socket.id);
                     this.logger.logger.info(`socket disconnected`)
-                    console.log("disconnect");
                 })
             })
         }
@@ -69,9 +67,7 @@ export default class SocketInitializer {
             this.logger.logger.info(`fetching random users`);
             await this.io.of('/').adapter.sockets(new Set()).then((results) => {
                 results.forEach(id => this.connectedUsers.push(id));
-
             });
-            console.log("initialize connectedUsers");
             this.logger.logger.info("initialize connectedUsers");
         }
         catch (err) {
