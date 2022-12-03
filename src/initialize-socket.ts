@@ -1,7 +1,7 @@
 import { DotenvConfigOutput } from "dotenv";
 import LoggerHandler from "./logger-config";
-import { Server} from 'socket.io';
-import { createClient, RedisClientType} from 'redis';
+import { Server } from 'socket.io';
+import { createClient, RedisClientType } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 import Middleware from "./middleware";
 import Events from "./events";
@@ -33,12 +33,12 @@ export default class SocketInitializer {
 
     async initializeAdapter(): Promise<void> {
         try {
-                await Promise.all([this.pubClient.connect(), this.subClient.connect()])
-                this.io.adapter(createAdapter(this.pubClient, this.subClient));
-                this.io.listen(3000);
-                await this.getConnectedList();
-                this.onConnectionEvent();
-            
+            await Promise.all([this.pubClient.connect(), this.subClient.connect()])
+            this.io.adapter(createAdapter(this.pubClient, this.subClient));
+            this.io.listen(3000);
+            await this.getConnectedList();
+            this.onConnectionEvent();
+
         }
         catch (err) {
             this.logger.logger.error(`try connect redis adapter ${err}`);
