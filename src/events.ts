@@ -32,7 +32,17 @@ export default class Events {
     wildEvent(connectedUsers: string[],socket:Socket) {
         try {
             this.io.emit(`incomeMessage`, "How many users would you like to send to?")
+            let message;
             socket.on('message', (msg) => {
+                message=msg;
+                while(!message.numOfRandoms||!(message.numOfRandoms<'9'&&message.numOfRandoms>'0'))
+                {
+                    this.io.emit(`incomeMessage`, "The syntax is incorrect please send a number")
+                    socket.on('message', (newMsg) => {
+                        message=newMsg;
+                    })
+
+                }
                 var randomUsers = this.controllers.fetchRandomUsers(msg.numOfRandoms, connectedUsers);
                 this.io.to([...randomUsers]).emit(`incomeMessage`, `hello picking randoms ${randomUsers}`);
                 this.logger.logger.info(`sent to random users ${randomUsers}`);
