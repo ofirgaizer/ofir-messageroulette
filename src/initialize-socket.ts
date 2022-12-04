@@ -7,16 +7,13 @@ import Middleware from "./middleware";
 import Events from "./events";
 
 export default class SocketInitializer {
-    io: Server
-    config: DotenvConfigOutput
-    logger: LoggerHandler
-    pubClient: RedisClientType
-    subClient: RedisClientType
-    socketOptions: any
-    events: Events
-    connectedUsers: string[]
-    middleware: Middleware
-    constructor(io: Server, config: DotenvConfigOutput, logger: LoggerHandler) {
+    private pubClient: RedisClientType
+    private subClient: RedisClientType
+    private socketOptions: any
+    private events: Events
+    private connectedUsers: string[]
+    private middleware: Middleware
+    constructor(private io: Server, private config: DotenvConfigOutput, private logger: LoggerHandler) {
         this.config = config
         this.logger = logger;
         this.io = io;
@@ -35,7 +32,7 @@ export default class SocketInitializer {
         try {
             await Promise.all([this.pubClient.connect(), this.subClient.connect()])
             this.io.adapter(createAdapter(this.pubClient, this.subClient));
-            this.io.listen(3000);
+            this.io.listen(+process.env.PORT);
             this.io.use((socket, next) => (this.middleware.checkAuth(socket, next)));
             await this.getConnectedList();
             this.onConnectionEvent();

@@ -4,11 +4,8 @@ import { Server } from 'socket.io';
 import LoggerHandler from './logger-config'
 
 export default class Middleware {
-    io: Server
-    config: DotenvConfigOutput
-    secretKey: any
-    logger: LoggerHandler
-    constructor(io: Server, config: DotenvConfigOutput, logger: LoggerHandler) {
+    private secretKey: any
+    constructor(private io: Server, private config: DotenvConfigOutput, private logger: LoggerHandler) {
         this.config = config
         this.io = io;
         this.secretKey = process.env.SECRET_KEY
