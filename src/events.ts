@@ -29,7 +29,7 @@ export default class Events {
         try {
                 
                 if (!message.numOfRandoms||!(message.numOfRandoms>'0'&&message.numOfRandoms<`${connectedUsers.length+1}`)) {
-                    this.io.emit(`incomeMessage`, "The syntax is incorrect please send a number in wild message")
+                    this.io.emit(`incomeMessage`, "The syntax is incorrect or number is to big please send a number in wild message")
                     this.logger.logger.info(`message not valid`);
 
                 }
